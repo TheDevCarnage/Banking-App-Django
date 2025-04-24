@@ -21,6 +21,7 @@ cloudinary = "==1.39.1"
 python-dateutil = "==2.9.0"
 psycopg2-binary = "==2.9.9"
 pre-commit = "*"
+loguru = "==0.7.2"
 
 [dev-packages]
 watchfiles = "==0.22.0"

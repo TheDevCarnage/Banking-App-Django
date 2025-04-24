@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c544be1b2d04ad9f4d32bab6e0a6a83ce8a83d96b9338ca890b0f58933a33f6e"
+            "sha256": "553b6fb1c8114741112f61dd70e90bf659204f727e911cf3632443cee7245ff9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -552,6 +552,15 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==5.5.3"
+        },
+        "loguru": {
+            "hashes": [
+                "sha256:003d71e3d3ed35f0f8984898359d65b79e5b21943f78af86aa5491210429b8eb",
+                "sha256:e671a53522515f34fd406340ee968cb9ecafbc4b36c679da03c18fd8d0bd51ac"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.5'",
+            "version": "==0.7.2"
         },
         "nodeenv": {
             "hashes": [
@@ -1105,6 +1114,14 @@
                 "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"
             ],
             "version": "==0.2.13"
+        },
+        "win32-setctime": {
+            "hashes": [
+                "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390",
+                "sha256:ae1fdf948f5640aae05c511ade119313fb6a30d7eabe25fef9764dca5873c4c0"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==1.2.0"
         }
     },
     "develop": {
