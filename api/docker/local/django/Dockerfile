@@ -36,8 +36,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN addgroup --system django && \
     adduser --system --ingroup django django && \
     mkdir -p ${APP_HOME}/staticfiles && \
-    chown django:django ${APP_HOME}/staticfiles && \
-    chmod 775 ${APP_HOME}/staticfiles
+    chown -R django:django ${APP_HOME}/staticfiles && \
+    chmod -R 775 ${APP_HOME}/staticfiles
 
 COPY --from=python-build-stage /usr/src/app/wheels /wheels/
 
@@ -49,7 +49,7 @@ COPY --chown=django:django ./docker/local/django/start.sh /start.sh
 
 
 RUN sed -i 's/\r$//g' /entrypoint.sh /start.sh  && \
-    chmod +x /entrypoint.sh /start.sh 
+    chmod +x /entrypoint.sh /start.sh
 
 COPY --chown=django:django . ${APP_HOME}
 

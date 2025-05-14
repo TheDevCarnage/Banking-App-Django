@@ -2,13 +2,13 @@ build:
 	docker compose -f local.yml up --build -d --remove-orphans
 
 up:
-	docker compose -f local.yml up -d 
+	docker compose -f local.yml up -d
 
-down: 
+down:
 	docker compose -f local.yml down
 
 down-v:
-	docker compose -f local.yml down -v 
+	docker compose -f local.yml down -v
 
 banker-config:
 	docker compose -f local.yml config
@@ -25,7 +25,7 @@ collectstatic:
 superuser:
 	docker compose -f local.yml run --rm api python manage.py createsuperuser
 
-flush: 
+flush:
 	docker compose -f local.yml run --rm api python manage.py flush
 
 network-inspect:
@@ -33,6 +33,3 @@ network-inspect:
 
 banker-db:
 	docker compose -f local.yml exec postgres psql --username=reesssaabh --dbname=banker
-
-
-
