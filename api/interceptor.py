@@ -1,6 +1,7 @@
 from loguru import logger
 import logging
 
+
 class InterceptHandler(logging.Handler):
     def emit(self, record):
         try:

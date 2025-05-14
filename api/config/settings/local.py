@@ -1,7 +1,8 @@
 from os import getenv, path
 from dotenv import load_dotenv
-#(no quality assurance)
-from .base import * #noqa 
+
+# (no quality assurance)
+from .base import *  # noqa
 from .base import BASE_DIR
 
 
@@ -9,7 +10,6 @@ local_env_file = path.join(BASE_DIR, ".envs", ".env.local")
 
 if path.isfile(local_env_file):
     load_dotenv(local_env_file)
-
 
 
 # Quick-start development settings - unsuitable for production
@@ -34,4 +34,12 @@ EMAIL_PORT = getenv("EMAIL_PORT")
 DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")
 DOMAIN = getenv("DOMAIN")
 
-MAX_UPLOAD_SIZE = 1*1024*1024 #(1MB)
+MAX_UPLOAD_SIZE = 1 * 1024 * 1024  # (1MB)
+
+CSRF_TRUSTED_ORIGIN = ["http://localhost:8080"]
+
+LOCKOUT_DURATION = timedelta(minutes=1)
+
+LOGIN_ATTEMPTS = 3
+
+OTP_EXPIRATION = timedelta(minutes=1)

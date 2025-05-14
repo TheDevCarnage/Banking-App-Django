@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from os import getenv, path
 
 from loguru import logger
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -25,7 +26,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    "django.contrib.humanize"
+    "django.contrib.humanize",
 ]
 
 
@@ -42,7 +43,7 @@ THIRD_PARTY_APPS = [
 ]
 
 
-LOCAL_APPS = [ 
+LOCAL_APPS = [
     "core_apps.common",
     "core_apps.user_auth",
     "core_apps.user_profile",
@@ -66,7 +67,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(APPS_DIR/"templates")],
+        "DIRS": [str(APPS_DIR / "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -147,22 +148,38 @@ STATIC_ROOT = str(BASE_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = "user_auth.User"
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "NextGen Bank API",
+    "DESCRIPTION": "An API Built for banking system",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "LICENSE": {
+        "name": "MIT License",
+        "url": "https://opensource.org/license/MIT",
+    },
+}
+
 
 LOGGING_CONFIG = None
 
 LOGURU_LOGGING = {
     "handlers": [
         {
-            "sink": BASE_DIR/"logs/debug.log",
+            "sink": BASE_DIR / "logs/debug.log",
             "level": "DEBUG",
-            "filter": lambda record : record["level"].no <= logger.level("WARNING").no, 
+            "filter": lambda record: record["level"].no <= logger.level("WARNING").no,
             "format": "{time: YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {name}:{function}:{line} - {message}",
             "rotation": "10MB",
             "retention": "30 days",
             "compression": "zip",
         },
         {
-            "sink": BASE_DIR/"logs/error.log",
+            "sink": BASE_DIR / "logs/error.log",
             "level": "ERROR",
             "format": "{time: YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {name}:{function}:{line} - {message}",
             "rotation": "10MB",
@@ -179,9 +196,20 @@ logger.configure(**LOGURU_LOGGING)
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False, 
-    "handlers": {
-        "loguru": {"class": "interceptor.InterceptHandler"}
-    },
-    "root": {"handlers": ["loguru"], "level": "DEBUG"}
+    "disable_existing_loggers": False,
+    "handlers": {"loguru": {"class": "interceptor.InterceptHandler"}},
+    "root": {"handlers": ["loguru"], "level": "DEBUG"},
 }
+
+CSRF_COOKIE_SECURE = False  # True in production
+SESSION_COOKIE_SECURE = False  # True in production
+CSRF_COOKIE_SAMESITE = "Lax"  # 'None' if cross-domain
+CSRF_USE_SESSIONS = False  # Default is False
+
+# For Docker's internal networking
+ALLOWED_HOSTS = ["*"]  # TEMPORARY for debugging!
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://0.0.0.0:8000",
+]
