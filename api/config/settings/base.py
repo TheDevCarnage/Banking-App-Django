@@ -60,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core_apps.user_auth.middleware.CustomHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -201,15 +202,4 @@ LOGGING = {
     "root": {"handlers": ["loguru"], "level": "DEBUG"},
 }
 
-CSRF_COOKIE_SECURE = False  # True in production
-SESSION_COOKIE_SECURE = False  # True in production
-CSRF_COOKIE_SAMESITE = "Lax"  # 'None' if cross-domain
-CSRF_USE_SESSIONS = False  # Default is False
 
-# For Docker's internal networking
-ALLOWED_HOSTS = ["*"]  # TEMPORARY for debugging!
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://0.0.0.0:8000",
-]
