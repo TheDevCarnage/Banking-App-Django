@@ -4,19 +4,20 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from .models import User
 
+
 class UserCreationForm(DjangoUserCreationForm):
     class Meta:
         model = User
         fields = [
-            "email", 
-            "id_no", 
-            "first_name", 
-            "middle_name", 
-            "last_name", 
+            "email",
+            "id_no",
+            "first_name",
+            "middle_name",
+            "last_name",
             "security_question",
-            "security_answer", 
-            "is_staff", 
-            "is_superuser"
+            "security_answer",
+            "is_staff",
+            "is_superuser",
         ]
 
     def clean_email(self):
@@ -24,13 +25,13 @@ class UserCreationForm(DjangoUserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError(_("A user with this email already exists."))
         return email
-    
+
     def clean_id_no(self):
         id_no = self.cleaned_data.get("id_no")
         if User.objects.filter(id_no=id_no).exists():
             raise ValidationError(_("A user with this ID Number already exists."))
         return id_no
-    
+
     def clean(self):
         cleaned_data = super().clean()
         is_superuser = cleaned_data.get("is_superuser")
@@ -39,34 +40,40 @@ class UserCreationForm(DjangoUserCreationForm):
 
         if not is_superuser:
             if not security_question:
-                self.add_error("security_question", _("Security question is required for regular users."))
+                self.add_error(
+                    "security_question",
+                    _("Security question is required for regular users."),
+                )
 
             if not security_answer:
-                self.add_error("security_answer", _("Security answer is required for regular users."))
+                self.add_error(
+                    "security_answer",
+                    _("Security answer is required for regular users."),
+                )
 
         return cleaned_data
-    
+
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
             user.save()
-        return user 
-    
+        return user
+
 
 class UserChangeForm(DjangoUserChangeForm):
     class Meta:
         model = User
         fields = [
-            "email", 
-            "id_no", 
-            "first_name", 
-            "middle_name", 
-            "last_name", 
+            "email",
+            "id_no",
+            "first_name",
+            "middle_name",
+            "last_name",
             "security_question",
-            "security_answer", 
+            "security_answer",
             "is_active",
-            "is_staff", 
-            "is_superuser"
+            "is_staff",
+            "is_superuser",
         ]
 
     def clean_email(self):
@@ -74,13 +81,13 @@ class UserChangeForm(DjangoUserChangeForm):
         if User.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
             raise ValidationError(_("A user with this email already exists."))
         return email
-    
+
     def clean_id_no(self):
         id_no = self.cleaned_data.get("id_no")
         if User.objects.exclude(pk=self.instance.pk).filter(id_no=id_no).exists():
             raise ValidationError(_("A user with this ID Number already exists."))
         return id_no
-    
+
     def clean(self):
         cleaned_data = super().clean()
         is_superuser = cleaned_data.get("is_superuser")
@@ -89,11 +96,15 @@ class UserChangeForm(DjangoUserChangeForm):
 
         if not is_superuser:
             if not security_question:
-                self.add_error("security_question", _("Security question is required for regular users."))
+                self.add_error(
+                    "security_question",
+                    _("Security question is required for regular users."),
+                )
 
             if not security_answer:
-                self.add_error("security_answer", _("Security answer is required for regular users."))
+                self.add_error(
+                    "security_answer",
+                    _("Security answer is required for regular users."),
+                )
 
         return cleaned_data
-    
-    
