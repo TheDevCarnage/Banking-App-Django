@@ -7,7 +7,7 @@ from loguru import logger
 
 
 def send_otp(email, otp):
-    subject = _('Your OTP code for Login')
+    subject = _("Your OTP code for Login")
     from_email = settings.DEFAULT_FROM_EMAIL
     recipient_list = [email]
 
@@ -29,7 +29,7 @@ def send_otp(email, otp):
 
 
 def send_account_locked_email(self):
-    subject = _('Your account has been locked.')
+    subject = _("Your account has been locked.")
     from_email = settings.DEFAULT_FROM_EMAIL
     recipient_list = [self.email]
 
@@ -47,4 +47,6 @@ def send_account_locked_email(self):
         self.email.send()
         logger.info(f"Account locked, email sent to: {self.email}")
     except Exception as e:
-        logger.error(f"failed to send account locked email to {self.email}: Error: {str(e)}")
+        logger.error(
+            f"failed to send account locked email to {self.email}: Error: {str(e)}"
+        )

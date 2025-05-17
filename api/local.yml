@@ -47,7 +47,7 @@ services:
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - banker_local_nw
-  
+
   nginx:
     build:
       context: ./docker/local/nginx
@@ -55,10 +55,10 @@ services:
     restart: always
     ports:
       - "8085:80"
-    volumes: 
-      - ./staticfiles:/app/staticfiles 
+    volumes:
+      - ./staticfiles:/app/staticfiles
       - logs_store:/var/log/nginx
-    depends_on: 
+    depends_on:
       - api
     networks:
       - banker_local_nw
