@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from os import getenv, path
 
 from loguru import logger
-from datetime import timedelta
+from datetime import timedelta, date
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -150,6 +151,13 @@ STATIC_ROOT = str(BASE_DIR / "staticfiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "user_auth.User"
+DEFAULT_BIRTH_DATE = date(1900, 1, 1)
+DEFAULT_DATE = date(2000, 2, 2)
+DEFAULT_EXPIRY_DATE = date(2026, 1, 1)
+DEFAULT_COUNTRY = "US"
+DEFAULT_PHONE_NUMBER = "+12098772300"
+
+
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
@@ -183,6 +191,16 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_WORKER_SEND_TASK_EVENTS = True
 
+CLOUDINARY_CLOUD_NAME = getenv("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = getenv("CLOUDINARY_API_SECRET")
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+)
+
 LOGGING_CONFIG = None
 
 LOGURU_LOGGING = {
@@ -211,6 +229,10 @@ LOGURU_LOGGING = {
 
 logger.configure(**LOGURU_LOGGING)
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8085",
+    # Add other origins if needed
+]
 
 LOGGING = {
     "version": 1,
