@@ -98,7 +98,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "8085:80"
+      - "8080:80"
     volumes:
       - ./staticfiles:/app/staticfiles
       - logs_store:/var/log/nginx
