@@ -1,6 +1,12 @@
 from django.urls import path
 
-from .views import CustomTokenCreateView, CustomTokenRefreshView, LogoutAPIView, OTPVerifyView, EmailVerificationView
+from .views import (
+    CustomTokenCreateView,
+    CustomTokenRefreshView,
+    LogoutAPIView,
+    OTPVerifyView,
+    EmailVerificationView,
+)
 
 urlpatterns = [
     path("login/", CustomTokenCreateView.as_view(), name="login"),

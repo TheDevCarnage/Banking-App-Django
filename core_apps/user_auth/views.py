@@ -20,8 +20,10 @@ from django.utils.encoding import force_str
 User = get_user_model()
 
 
-def set_auth_cookies(response: Response, access_token: str, refresh_token: Optional[str]=None)->None:
-    access_token_lifetime = settings.SIMPLE_JWT["ACCEESS_TOKEN_LIFETIME"].total_seconds()
+def set_auth_cookies(
+    response: Response, access_token: str, refresh_token: Optional[str] = None
+) -> None:
+    access_token_lifetime = settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds()
     cookie_settings = {
         "path": settings.COOKIE_PATH,
         "secure": settings.COOKIE_SECURE,
@@ -48,12 +50,13 @@ class CustomTokenCreateView(TokenCreateView):
     def _action(self, serializer):
         user = serializer.user
         if user.is_locked_out:
-            return Response({
-                "error": f"Account is locked due to multiple failed login attempts. Please try again after {settings.LOCKOUT_DURATION.total_seconds()/60} minutes.",
+            return Response(
+                {
+                    "error": f"Account is locked due to multiple failed login attempts. Please try again after {settings.LOCKOUT_DURATION.total_seconds()/60} minutes.",
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
         user.reset_failed_login_attempts()
 
         otp = generate_otp()
@@ -63,10 +66,10 @@ class CustomTokenCreateView(TokenCreateView):
 
         return Response(
             {"success": "OTP sent to your email", "email": user.email},
-            status = status.HTTP_200_OK,
+            status=status.HTTP_200_OK,
         )
-    
-    def post(self, request: Request, *args: Any, **kwargs: Any)->Response:
+
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
 
         try:
@@ -77,25 +80,28 @@ class CustomTokenCreateView(TokenCreateView):
             if user:
                 user.handle_failed_login_attempts()
                 failed_attempts = user.failed_login_attempts
-                logger.error(f"Failed login attempts: {failed_attempts} for user: {email}")
+                logger.error(
+                    f"Failed login attempts: {failed_attempts} for user: {email}"
+                )
 
                 if failed_attempts >= settings.LOGIN_ATTEMPTS:
                     return Response(
-                        {"error": f"You have exceeded the maximum number of login attempts. Your account has been locked for {settings.LOCKOUT_DURATION.total_seconds/60} minutes. An email has been sent to you with further instructions."},
-                        status=status.HTTP_403_FORBIDDEN
+                        {
+                            "error": f"You have exceeded the maximum number of login attempts. Your account has been locked for {settings.LOCKOUT_DURATION.total_seconds/60} minutes. An email has been sent to you with further instructions."
+                        },
+                        status=status.HTTP_403_FORBIDDEN,
                     )
             else:
                 logger.error(f"Failed login attempt with non-existent user: {email}")
-                return Response({
-                    "error": "Invalid login credentials"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                return Response(
+                    {"error": "Invalid login credentials"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         return self._action(serializer)
 
 
 class CustomTokenRefreshView(TokenRefreshView):
-    def post(self, request: Request, *args: Any, **kwargs: Any)->Response:
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         refresh_token = request.COOKIES.get("refresh")
         if refresh_token:
             request.data["refresh"] = refresh_token
@@ -112,7 +118,9 @@ class CustomTokenRefreshView(TokenRefreshView):
                 refresh_res.data.pop("refresh", None)
                 refresh_res.data["message"] = "Access token refreshed successfully."
             else:
-                refresh_res.data["message"] = "Access or refresh token not found in refresh response data"
+                refresh_res.data[
+                    "message"
+                ] = "Access or refresh token not found in refresh response data"
                 logger.error(
                     "Access or refresh token not found in refresh response data"
                 )
@@ -123,19 +131,17 @@ class OTPVerifyView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        otp = request.data.get["otp"]
+        otp = request.data.get("otp")
         if not otp:
             return Response(
                 {"error": "OTP is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        user = user.objects.filter(otp=otp, otp_expiry_time__gt=timezone.now()).first()
+        user = User.objects.filter(otp=otp, otp_expiry_time__gt=timezone.now()).first()
 
         if not user:
             return Response(
-                {
-                    "error": "Invalid or expired OTP."
-                },
+                {"error": "Invalid or expired OTP."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if user.is_locked_out:
@@ -145,7 +151,7 @@ class OTPVerifyView(APIView):
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
         user.verify_otp(otp)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
@@ -174,6 +180,7 @@ class LogoutAPIView(APIView):
 
 class EmailVerificationView(APIView):
     permission_classes = [permissions.AllowAny]
+
     def get(self, request, token, uid):
         print(f"uid {uid}")
         print(f"token: {token}")

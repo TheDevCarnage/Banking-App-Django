@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import Token
 
 
 class CookieAuthentication(JWTAuthentication):
-
     def authenticate(self, request: Request) -> Optional[Tuple[AuthUser, Token]]:
         header = self.get_header(request)
         raw_token = None
@@ -25,5 +24,3 @@ class CookieAuthentication(JWTAuthentication):
             except TokenError as e:
                 logger.error(f"Token validation error: {str(e)}")
         return None
-
-

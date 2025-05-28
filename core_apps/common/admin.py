@@ -6,9 +6,17 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import ContentView
 
+
 @admin.register(ContentView)
 class ContentViewAdmin(admin.ModelAdmin):
-    list_display = ["content_object", "content_type", "user", "viewer_ip", "last_viewed", "created_at"]
+    list_display = [
+        "content_object",
+        "content_type",
+        "user",
+        "viewer_ip",
+        "last_viewed",
+        "created_at",
+    ]
     list_filter = ["content_type", "last_viewed", "created_at"]
     date_hierarchy = "last_viewed"
     readonly_fields = [
@@ -18,20 +26,21 @@ class ContentViewAdmin(admin.ModelAdmin):
         "object_id",
         "content_object",
         "created_at",
-        "updated_at"
+        "updated_at",
     ]
     fieldsets = (
         (None, {"fields": ("content_type", "content_object", "object_id")}),
         (_("View Details"), {"fields": ("user", "viewer_ip", "last_viewed")}),
         (
-            _("TimeStamps"), {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
+            _("TimeStamps"),
+            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
         ),
     )
 
-    def has_add_permission(self, request: HttpRequest)->bool:
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
-    
-    def has_change_permission(self, request: HttpRequest, obj: Any=None)->bool:
+
+    def has_change_permission(self, request: HttpRequest, obj: Any = None) -> bool:
         return False
 
 
@@ -41,6 +50,6 @@ class ContentViewInline(GenericTabularInline):
 
     readonly_fields = ["user", "viewer_ip", "last_viewed", "created_at"]
     can_delete = False
-    
+
     def has_add_permission(self, request: HttpRequest) -> bool:
         return False
