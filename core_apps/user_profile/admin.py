@@ -7,15 +7,17 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import NextOfKin, Profile
 
+
 class ProfileAdminForm(forms.ModelForm):
     photo = CloudinaryFileField(
-        options={"crop": "thumb", "width":200, "height": 200, "folder": "bank_photos"},
+        options={"crop": "thumb", "width": 200, "height": 200, "folder": "bank_photos"},
         required=False,
     )
 
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = "__all__"
+
 
 class NextOfKinInline(admin.TabularInline):
     model = NextOfKin
@@ -35,7 +37,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = [
         "user",
         "full_name",
-        "phone_number", 
+        "phone_number",
         "email",
         "employment_status",
         "photo_preview",
@@ -48,7 +50,12 @@ class ProfileAdmin(admin.ModelAdmin):
         "employment_status",
         "country",
     ]
-    search_fields = ["user__email", "user__first_name", "user__last_name", "phone_number"]
+    search_fields = [
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+        "phone_number",
+    ]
     readonly_fields = ["user"]
     fieldsets = (
         (
@@ -113,9 +120,10 @@ class ProfileAdmin(admin.ModelAdmin):
         if obj.photo:
             return format_html(
                 '<img src="{}" width="50" height="50" style="object-fit:cover;" />',
-                obj.photo.url
+                obj.photo.url,
             )
         return "No Photo Yet!"
+
     photo_preview.short_description = _("Photo")
 
 
@@ -127,5 +135,5 @@ class NextOfKinAdmin(admin.ModelAdmin):
 
     def full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
-    
+
     full_name.short_description = _("Full Name")

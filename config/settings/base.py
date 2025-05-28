@@ -160,7 +160,7 @@ DEFAULT_PHONE_NUMBER = "+12098772300"
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_AUTHENTICATION_CLASSES": [ 
+    "DEFAULT_AUTHENTICATION_CLASSES": [
         "core_apps.common.cookie_auth.CookieAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -202,7 +202,7 @@ DJOSER = {
     "ACTIVATION_URL": "api/v1/auth/activate/{uid}/{token}",
     "PASSWORD_RESET_CONFIRM_URL": "password-reset/{uid}/{token}",
     "SERIALIZERS": {
-       "user_create": "core_apps.user_auth.serializers.UserCreateSerializer"
+        "user_create": "core_apps.user_auth.serializers.UserCreateSerializer"
     },
 }
 
@@ -247,11 +247,11 @@ cloudinary.config(
 )
 
 
-COOKIE_NAME = 'access'
+COOKIE_NAME = "access"
 
-COOKIE_SAMESITE = 'Lax'
+COOKIE_SAMESITE = "Lax"
 
-COOKIE_PATH = '/'
+COOKIE_PATH = "/"
 
 COOKIE_HTTPONLY = True
 

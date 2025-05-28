@@ -3,6 +3,7 @@ from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerialize
 
 User = get_user_model()
 
+
 class UserCreateSerializer(DjoserUserCreateSerializer):
     class Meta(DjoserUserCreateSerializer.Meta):
         model = User
@@ -16,9 +17,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
             "security_question",
             "security_answer",
         ]
-    
+
     def create(self, validated_data):
         user = user.objects.create_user(**validated_data)
         return user
-    
-
