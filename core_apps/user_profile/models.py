@@ -11,7 +11,7 @@ from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
 from core_apps.common.models import TimeStampedModel
-
+from core_apps.accounts.models import BankAccount
 
 User = get_user_model()
 
@@ -162,6 +162,14 @@ class Profile(TimeStampedModel):
     )
     employer_state = models.CharField(
         _("Employer State"), max_length=50, blank=True, null=True
+    )
+    account_currency = models.CharField(_("Account Currency"), max_length=20, choices=BankAccount.AccountCurrency.choices, blank=True, null=True)
+    account_type = models.CharField(
+        _("Account Type"),
+        max_length=20,
+        choices=BankAccount.AccountType.choices,
+        blank=True,
+        null=True,
     )
     photo = CloudinaryField(_("Photo"), blank=True, null=True)
     photo_url = models.URLField(_("Photo URL"), blank=True, null=True)

@@ -11,6 +11,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
 from core_apps.common.models import ContentView
+from core_apps.accounts.models import BankAccount
 from .models import Profile, NextOfKin
 from .tasks import upload_photos_to_cloudinary
 
@@ -60,7 +61,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     id_photo_url = serializers.URLField(read_only=True)
     signature_photo_url = serializers.URLField(read_only=True)
     view_count = serializers.SerializerMethodField()
-
+    account_currency = serializers.ChoiceField(
+        choices=BankAccount.AccountCurrency.choices
+    )
+    account_type = serializers.ChoiceField(
+        choices=BankAccount.AccountType.choices
+    )
     class Meta:
         model = Profile
 
@@ -106,6 +112,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "signature_photo",
             "signature_photo_url",
             "view_count",
+            "account_currency",
+            "account_type",
         ]
 
         read_only_fields = [
@@ -126,9 +134,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 "id_expiry_date": "ID expiry date must be after the issue date"
             })
-        
+
         return attrs
-    
+
     def to_representation(self, instance: Profile)->dict:
         representation = super().to_representation(instance)
 
@@ -137,7 +145,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         ).data
 
         return representation
-    
+
     def update(self, instance: Profile, validated_data: dict) -> Profile:
         user_data = validated_data.pop("user", {})
 
@@ -177,11 +185,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             upload_photos_to_cloudinary.delay(str(instance.id), photos_to_upload)
 
         return instance
-    
+
     def get_view_count(self, obj:Profile)->int:
         content_type = ContentType.objects.get_for_model(obj)
         return ContentView.objects.filter(content_type=content_type, object_id=obj.id).count()
-    
+
 
 class ProfileListSerializer(serializers.ModelSerializer):
     full_name = serializers.ReadOnlyField(source="user.full_name")
@@ -207,4 +215,3 @@ class ProfileListSerializer(serializers.ModelSerializer):
             return obj.photo.url
         except:
             return None
-        

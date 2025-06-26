@@ -182,8 +182,6 @@ class EmailVerificationView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, token, uid):
-        print(f"uid {uid}")
-        print(f"token: {token}")
         if not uid or not token:
             logger.warning("Email verification failed: Missing UID or token")
             return Response(
@@ -192,7 +190,6 @@ class EmailVerificationView(APIView):
 
         try:
             uid_decoded = urlsafe_base64_decode(uid).decode()
-            print(uid_decoded)
             user = User.objects.get(pk=uid_decoded)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             logger.error(f"Email verification failed: Invalid UID {uid}")
