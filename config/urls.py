@@ -25,6 +25,7 @@ urlpatterns = [
     path("api/v1/auth/", include("djoser.urls.authtoken")),
     path("api/v1/auth/", include("core_apps.user_auth.urls")),
     path("api/v1/profiles/", include("core_apps.user_profile.urls")),
+    path("api/v1/accounts/", include("core_apps.accounts.urls")),
 ]
 
 
