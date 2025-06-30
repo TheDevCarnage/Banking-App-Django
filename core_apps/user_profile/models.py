@@ -163,7 +163,13 @@ class Profile(TimeStampedModel):
     employer_state = models.CharField(
         _("Employer State"), max_length=50, blank=True, null=True
     )
-    account_currency = models.CharField(_("Account Currency"), max_length=20, choices=BankAccount.AccountCurrency.choices, blank=True, null=True)
+    account_currency = models.CharField(
+        _("Account Currency"),
+        max_length=20,
+        choices=BankAccount.AccountCurrency.choices,
+        blank=True,
+        null=True,
+    )
     account_type = models.CharField(
         _("Account Type"),
         max_length=20,

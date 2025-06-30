@@ -7,7 +7,7 @@ from typing import Union, List
 from .models import BankAccount
 
 
-def generate_account_number(currency: str)->str:
+def generate_account_number(currency: str) -> str:
     bank_code = getenv("BANK_CODE")
     branch_code = getenv("BANK_BRANCH_CODE")
     currency_codes = {
@@ -19,7 +19,7 @@ def generate_account_number(currency: str)->str:
     currency_code = currency_codes.get(currency)
     if not currency_code:
         raise ValueError(f"Invalid currency: {currency}")
-    
+
     prefix = f"{bank_code}{branch_code[:3]}{currency_code}"
     remaining_digits = 16 - len(prefix) - 1
     random_digits = "".join(
@@ -32,10 +32,10 @@ def generate_account_number(currency: str)->str:
     return f"{partial_account_number}{check_digit}"
 
 
-def calculate_luhn_check_digit(number: str)->int:
-    def split_into_digit(n: Union[str, int])->List[int]:
+def calculate_luhn_check_digit(number: str) -> int:
+    def split_into_digit(n: Union[str, int]) -> List[int]:
         return [int(digit) for digit in str(n)]
-    
+
     digits = split_into_digit(number)
 
     odd_digits = digits[-1::-2]
@@ -43,13 +43,13 @@ def calculate_luhn_check_digit(number: str)->int:
     total = sum(odd_digits)
 
     for d in even_digits:
-        doubled = d*2
+        doubled = d * 2
         total += sum(split_into_digit(doubled))
 
-    return (10-(total%10)) % 10
+    return (10 - (total % 10)) % 10
 
 
-def create_bank_account(user, currency: str, account_type: str)-> str:
+def create_bank_account(user, currency: str, account_type: str) -> str:
     with transaction.atomic():
         while True:
             account_number = generate_account_number(currency)
@@ -63,7 +63,7 @@ def create_bank_account(user, currency: str, account_type: str)-> str:
                 account_number=account_number,
                 currency=currency,
                 account_type=account_type,
-                is_primary=is_primary
+                is_primary=is_primary,
             )
             print(bank_account)
 

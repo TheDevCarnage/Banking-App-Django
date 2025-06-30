@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-@admin.register(BankAccount)
 
+@admin.register(BankAccount)
 class BankAccountAdmin(admin.ModelAdmin):
     list_display = [
         "account_number",
@@ -44,7 +44,7 @@ class BankAccountAdmin(admin.ModelAdmin):
     ]
 
     fieldsets = (
-        (   
+        (
             None,
             {
                 "fields": (
@@ -58,7 +58,8 @@ class BankAccountAdmin(admin.ModelAdmin):
             },
         ),
         (
-            _("status"), {
+            _("status"),
+            {
                 "fields": (
                     "account_status",
                     "kyc_submitted",
@@ -70,9 +71,10 @@ class BankAccountAdmin(admin.ModelAdmin):
             },
         ),
         (
-            _("Timestamps"), {
-                "fields":(
-                    "created_at", 
+            _("Timestamps"),
+            {
+                "fields": (
+                    "created_at",
                     "updated_at",
                 ),
                 "classes": ("collapse",),
@@ -86,14 +88,13 @@ class BankAccountAdmin(admin.ModelAdmin):
     get_verified_by.short_description = "Verified By"
     get_verified_by.admin_order_field = "verified_by__first_name"
 
-
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        
+
         return qs.filter(verified_by=request.user)
-    
+
     def has_change_permission(self, request, obj=None):
         if not obj:
             return True

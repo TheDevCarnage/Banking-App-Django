@@ -9,10 +9,11 @@ from django.apps import apps
 from django.core.files.storage import default_storage
 from loguru import logger
 
+
 @shared_task(name="upload_photos_to_cloudinary")
-def upload_photos_to_cloudinary(profile_id: UUID, photos: dict) ->None:
+def upload_photos_to_cloudinary(profile_id: UUID, photos: dict) -> None:
     try:
-        profile_model = apps.get_model('user_profile', 'Profile')
+        profile_model = apps.get_model("user_profile", "Profile")
         profile = profile_model.objects.get(id=profile_id)
 
         for field_name, photo_data in photos.items():
@@ -33,5 +34,7 @@ def upload_photos_to_cloudinary(profile_id: UUID, photos: dict) ->None:
         logger.error(f"Failed to upload photos for profile {profile_id}: {str(e)}")
 
         for photo_data in photos.values():
-            if photo_data["type"] == "file" and default_storage.exists(photo_data["path"]):
+            if photo_data["type"] == "file" and default_storage.exists(
+                photo_data["path"]
+            ):
                 default_storage.delete(photo_data["path"])

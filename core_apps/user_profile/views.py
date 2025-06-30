@@ -93,7 +93,7 @@ class ProfileDetailAPIView(generics.RetrieveUpdateAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
 
-        try: 
+        try:
             serializer.is_valid(raise_exception=True)
             with transaction.atomic():
                 updated_instance = serializer.save()
@@ -103,7 +103,7 @@ class ProfileDetailAPIView(generics.RetrieveUpdateAPIView):
                         currency=updated_instance.account_currency,
                         account_type=updated_instance.account_type,
                     ).first()
-                    
+
                     if not existing_account:
                         create_bank_account(
                             user=request.user,
@@ -111,20 +111,15 @@ class ProfileDetailAPIView(generics.RetrieveUpdateAPIView):
                             account_type=updated_instance.account_type,
                         )
 
-
-                        message = (
-                            "Profile updated and new bank account created successfully. An email has been sent to you with further instructions"
-                        )
+                        message = "Profile updated and new bank account created successfully. An email has been sent to you with further instructions"
                     else:
-                        message = (
-                            "Profile updated successfully. No new account created as one already exists for this currency"
-                        )
+                        message = "Profile updated successfully. No new account created as one already exists for this currency"
                     return Response(
                         {
                             "message": message,
                             "data": serializer.data,
                         },
-                        status=status.HTTP_200_OK
+                        status=status.HTTP_200_OK,
                     )
                 else:
                     return Response(

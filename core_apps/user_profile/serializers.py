@@ -19,7 +19,7 @@ User = get_user_model()
 
 
 class UUIDField(serializers.Field):
-    def to_representation(self, value: str)->str:
+    def to_representation(self, value: str) -> str:
         return str(value)
 
 
@@ -33,7 +33,7 @@ class NextOfKinSerializer(serializers.ModelSerializer):
 
         exclude = ["profile"]
 
-    def create(self, validated_data: Dict)->NextOfKin:
+    def create(self, validated_data: Dict) -> NextOfKin:
         profile = self.context.get("profile")
         if not profile:
             raise serializers.ValidationError("Profile context is required.")
@@ -42,8 +42,10 @@ class NextOfKinSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     id = UUIDField(read_only=True)
-    first_name = serializers.CharField(source='user.first_name')
-    middle_name = serializers.CharField(source="user.middle_name", allow_blank=True, required=False)
+    first_name = serializers.CharField(source="user.first_name")
+    middle_name = serializers.CharField(
+        source="user.middle_name", allow_blank=True, required=False
+    )
     last_name = serializers.CharField(source="user.last_name")
     username = serializers.ReadOnlyField(source="user.username")
     email = serializers.EmailField(source="user.email", read_only=True)
@@ -64,9 +66,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     account_currency = serializers.ChoiceField(
         choices=BankAccount.AccountCurrency.choices
     )
-    account_type = serializers.ChoiceField(
-        choices=BankAccount.AccountType.choices
-    )
+    account_type = serializers.ChoiceField(choices=BankAccount.AccountType.choices)
+
     class Meta:
         model = Profile
 
@@ -125,23 +126,25 @@ class ProfileSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def validate(self, attrs: Dict[str, Any])->Dict[str, Any]:
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
 
         id_issue_date = attrs.get("id_issue_date")
         id_expiry_date = attrs.get("id_expiry_date")
 
         if id_issue_date and id_expiry_date and id_expiry_date <= id_issue_date:
-            raise serializers.ValidationError({
-                "id_expiry_date": "ID expiry date must be after the issue date"
-            })
+            raise serializers.ValidationError(
+                {"id_expiry_date": "ID expiry date must be after the issue date"}
+            )
 
         return attrs
 
-    def to_representation(self, instance: Profile)->dict:
+    def to_representation(self, instance: Profile) -> dict:
         representation = super().to_representation(instance)
 
-        representation['next_of_kin'] = NextOfKinSerializer(
-            instance.next_of_kin.all(), many=True, read_only=True,
+        representation["next_of_kin"] = NextOfKinSerializer(
+            instance.next_of_kin.all(),
+            many=True,
+            read_only=True,
         ).data
 
         return representation
@@ -186,9 +189,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         return instance
 
-    def get_view_count(self, obj:Profile)->int:
+    def get_view_count(self, obj: Profile) -> int:
         content_type = ContentType.objects.get_for_model(obj)
-        return ContentView.objects.filter(content_type=content_type, object_id=obj.id).count()
+        return ContentView.objects.filter(
+            content_type=content_type, object_id=obj.id
+        ).count()
 
 
 class ProfileListSerializer(serializers.ModelSerializer):
