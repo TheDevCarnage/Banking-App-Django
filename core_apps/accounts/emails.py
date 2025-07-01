@@ -54,3 +54,34 @@ def send_full_activation_email(account: BankAccount) -> None:
         logger.error(
             "Failed to send Fully Activated email to: {account.user.email}: Error {str(e)}"
         )
+
+
+def send_deposit_confirmation_email(
+    user, user_email, amount, currency, account_number, new_balance
+) -> None:
+    subject = _("Deposit Confirmation")
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [user_email]
+
+    context = {
+        "site_name": settings.SITE_NAME,
+        "user": user,
+        "amount": amount,
+        "currency": currency,
+        "new_balance": new_balance,
+        "account_number": account_number,
+    }
+
+    html_email = render_to_string("emails/deposit_confirmation.html", context=context)
+    plain_email = strip_tags(html_email)
+
+    email = EmailMultiAlternatives(subject, plain_email, from_email, recipient_list)
+    email.attach_alternative(html_email, "text/html")
+
+    try:
+        email.send()
+        logger.info(f"Deposit Confirmation email sent to: {user_email}")
+    except Exception as e:
+        logger.error(
+            "Failed to send Deposit Confirmation email to: {user_email}: Error {str(e)}"
+        )
