@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import AccountVerificationView, DepositView
+from .views import (
+    AccountVerificationView,
+    DepositView,
+    InitiateWithdrawlView,
+    VerifyUsernameAndWithdrawAPIView,
+)
 
 urlpatterns = [
     path(
@@ -12,5 +17,15 @@ urlpatterns = [
         "deposit/",
         DepositView.as_view(),
         name="account_deposit",
+    ),
+    path(
+        "initiate-withdrawl/",
+        InitiateWithdrawlView.as_view(),
+        name="initiate_withdrawl",
+    ),
+    path(
+        "verify-username-and-withdraw/",
+        VerifyUsernameAndWithdrawAPIView.as_view(),
+        name="verify_username_and_withdraw",
     ),
 ]
