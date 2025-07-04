@@ -20,8 +20,9 @@ from dateutil import parser
 from django.db.models import Q
 from rest_framework.filters import OrderingFilter
 from django.utils.dateparse import parse_datetime
-from django.utils.timezone import make_aware, is_naive
-
+from django.utils import timezone
+from rest_framework.views import APIView
+from .tasks import generate_transaction_pdf
 from .models import BankAccount, Transaction
 from decimal import Decimal
 from .serializers import (
@@ -526,3 +527,48 @@ class TransactionListAPIView(generics.ListAPIView):
                 f"User {request.user.email} successfully retrieved transactions(all accounts)"
             )
         return response
+
+
+class TransactionPDFView(APIView):
+    renderer_classes = [GenericJSONRenderer]
+    object_label = "transaction_pdf"
+
+    def post(self, request: Request) -> Response:
+        user = request.user
+        start_date = request.data.get("start_date") or request.query_params.get(
+            "start_date"
+        )
+        end_date = request.data.get("end_date") or request.query_params.get("end_date")
+        account_number = request.data.get("account_number") or request.query_params.get(
+            "account_number"
+        )
+
+        if not end_date:
+            end_date = timezone.now().date().isoformat()
+
+        if not start_date:
+            start_date = (
+                (parser.parse(end_date) - timezone.timedelta(days=30))
+                .date()
+                .isoformat()
+            )
+
+        try:
+            start_date = parser.parse(start_date).date().isoformat()
+            end_date = parser.parse(end_date).date().isoformat()
+        except ValueError as e:
+            return Response(
+                {
+                    "error": f"Invalid date format: {str(e)}",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        generate_transaction_pdf.delay(user.id, start_date, end_date, account_number)
+        return Response(
+            {
+                "message": f"Your Transaction history PDF is being generated and will be sent to your email shortly",
+                "email": user.email,
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )

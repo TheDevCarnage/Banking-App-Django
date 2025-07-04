@@ -165,7 +165,7 @@ class OTPVerifyView(APIView):
 
         set_auth_cookies(response, access_token, refresh_token)
 
-        logger.info(f"successful login with OTO: {user.email}")
+        logger.info(f"successful login with OTP: {user.email}")
         return response
 
 

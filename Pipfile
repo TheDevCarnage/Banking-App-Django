@@ -26,6 +26,7 @@ celery = "==5.3.6"
 flower = "==2.0.1"
 django-redis = "==5.4.0"
 django-celery-email = "*"
+reportlab = "==4.2.2"
 
 [dev-packages]
 watchfiles = "==0.22.0"
