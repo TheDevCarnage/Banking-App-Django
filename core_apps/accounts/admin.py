@@ -38,7 +38,7 @@ class BankAccountAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
-        "account_number",
+        # "account_number",
         "created_at",
         "updated_at",
     ]

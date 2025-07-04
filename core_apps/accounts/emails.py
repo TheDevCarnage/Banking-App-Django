@@ -132,7 +132,7 @@ def send_transfer_email(
 ) -> None:
     subject = _("Transfer Notification")
     from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [user_email]
+    recipient_list = [sender_email]
 
     common_context = {
         "site_name": settings.SITE_NAME,
