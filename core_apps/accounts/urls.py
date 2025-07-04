@@ -9,6 +9,7 @@ from .views import (
     VerifySecurityQuestionView,
     VerifyOTPView,
     TransactionListAPIView,
+    TransactionPDFView,
 )
 
 urlpatterns = [
@@ -51,5 +52,10 @@ urlpatterns = [
         "transactions/",
         TransactionListAPIView.as_view(),
         name="transaction_list",
+    ),
+    path(
+        "transactions/pdf/",
+        TransactionPDFView.as_view(),
+        name="transaction_pdf",
     ),
 ]
