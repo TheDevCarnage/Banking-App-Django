@@ -7,21 +7,21 @@ NextGen Bank is a modern banking API system built with **Django REST Framework**
 ## 🔧 Tech Stack
 
 - **Backend:** Django, Django REST Framework
-  
+
 - **Database:** PostgreSQL
-  
+
 - **Auth:** JWT + OTP (2-Step Verification)
-  
+
 - **Task Queue:** Celery
-  
+
 - **Async Broker:** Redis
- 
+
 - **Email Testing:** Mailpit
-  
+
 - **API Docs:** Swagger
-  
+
 - **Containerization:** Docker
-  
+
 - **Monitoring:** Flower (for Celery)
 
 ---
