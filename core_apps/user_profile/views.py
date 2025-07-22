@@ -97,6 +97,7 @@ class ProfileDetailAPIView(generics.RetrieveUpdateAPIView):
             serializer.is_valid(raise_exception=True)
             with transaction.atomic():
                 updated_instance = serializer.save()
+                print(updated_instance.is_complete_with_next_of_kin())
                 if updated_instance.is_complete_with_next_of_kin():
                     existing_account = BankAccount.objects.filter(
                         user=request.user,
