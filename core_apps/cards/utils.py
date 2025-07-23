@@ -7,20 +7,23 @@ from os import getenv
 BANK_CARD_PREFIX = getenv("BANK_CARD_PREFIX")
 BANK_CARD_CODE = getenv("BANK_CARD_CODE")
 
-def generate_card_number(prefix=BANK_CARD_PREFIX, card_code=BANK_CARD_CODE, length=16)->str:
+
+def generate_card_number(
+    prefix=BANK_CARD_PREFIX, card_code=BANK_CARD_CODE, length=16
+) -> str:
     total_prefix = prefix + card_code
-    random_digits_length = length - len(total_prefix) -1
+    random_digits_length = length - len(total_prefix) - 1
 
     if random_digits_length < 0:
         raise ValueError(f"Prefix and code are too long for the specified card length")
-    
-    number = total_prefix 
+
+    number = total_prefix
 
     number += "".join([str(random.randint(0, 9)) for _ in range(random_digits_length)])
 
     digits = [int(d) for d in number]
 
-    for i in range(len(digits) -1, -1, -2):
+    for i in range(len(digits) - 1, -1, -2):
         digits[i] *= 2
         if digits[i] > 9:
             digits[i] -= 9

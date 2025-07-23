@@ -17,21 +17,19 @@ class VirtualCardListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return VirtualCard.objects.filter(user=self.request.user)
-    
+
     def get_serializer_class(self):
         if self.request.method == "POST":
             return VirtualCardCreateSerializer
         return VirtualCardSerializer
-    
-    def create(self, request, *args, **kwargs)->Response:
+
+    def create(self, request, *args, **kwargs) -> Response:
         if request.user.virtual_cards.count() >= 3:
             return Response(
-                {
-                    "error": "You can only have up to 3 virtual cards at a time."
-                },
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "You can only have up to 3 virtual cards at a time."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -45,9 +43,11 @@ class VirtualCardListCreateAPIView(generics.ListCreateAPIView):
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
         virtual_card = serializer.save(user=request.user)
-        logger.info(f"Visa card number {virtual_card.card_number} created for user {request.user.full_name}")
+        logger.info(
+            f"Visa card number {virtual_card.card_number} created for user {request.user.full_name}"
+        )
 
         return Response(
             VirtualCardSerializer(virtual_card).data,
@@ -76,13 +76,13 @@ class VirtualCardDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             instance = self.get_object()
             if instance.balance > 0:
                 return Response(
-                    {
-                        "error": "Cannot delete a card with non-zero balance."
-                    },
+                    {"error": "Cannot delete a card with non-zero balance."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             self.destroy(instance)
-            logger.info(f"Visa card number {instance.card_number}, belonging to {instance.user.full_name} deleted.")
+            logger.info(
+                f"Visa card number {instance.card_number}, belonging to {instance.user.full_name} deleted."
+            )
             return Response(
                 {"message": "Card successfully deleted."},
                 status=status.HTTP_200_OK,
@@ -121,10 +121,8 @@ class VirtualCardTopUpAPIView(generics.UpdateAPIView):
 
         if not amount:
             return Response(
-                {
-                    "error": "Amount must be provided."
-                },
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "Amount must be provided."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
@@ -148,7 +146,7 @@ class VirtualCardTopUpAPIView(generics.UpdateAPIView):
                 {"error": "Insufficient funds in bank account."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         bank_account.account_balance -= amount
         virtual_card.balance += amount
         bank_account.save()
@@ -166,8 +164,12 @@ class VirtualCardTopUpAPIView(generics.UpdateAPIView):
             receiver_account=bank_account,
         )
 
-        send_virtual_card_topup_email(request.user, virtual_card, amount, virtual_card.balance)
-        logger.info(f"Visa card {virtual_card.card_number} has been topped up with {amount} by {virtual_card.user.full_name}. Transaction ID: {transaction.id}")
+        send_virtual_card_topup_email(
+            request.user, virtual_card, amount, virtual_card.balance
+        )
+        logger.info(
+            f"Visa card {virtual_card.card_number} has been topped up with {amount} by {virtual_card.user.full_name}. Transaction ID: {transaction.id}"
+        )
 
         return Response(
             VirtualCardSerializer(virtual_card).data, status=status.HTTP_200_OK

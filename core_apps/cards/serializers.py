@@ -11,6 +11,7 @@ class UUIDField(serializers.Field):
     def to_representation(self, value):
         return str(value)
 
+
 class VirtualCardSerializer(serializers.ModelSerializer):
     id = UUIDField(read_only=True)
     balance = serializers.DecimalField(
@@ -38,13 +39,13 @@ class VirtualCardCreateSerializer(serializers.ModelSerializer):
                 "You can only have up to 3 virtual cards at a time"
             )
         return attrs
-    
-    def create(self, validated_data)->dict:
+
+    def create(self, validated_data) -> dict:
         user = validated_data.get("user")
         bank_account_number = validated_data.pop("bank_account_number")
         bank_account = user.bank_accounts.get(account_number=bank_account_number)
         card_number = generate_card_number()
-        expiry_date = timezone.now() + timezone.timedelta(days=3*365)
+        expiry_date = timezone.now() + timezone.timedelta(days=3 * 365)
         cvv = generate_cvv(card_number, expiry_date.strftime("%m%y"))
 
         virtual_card = VirtualCard.objects.create(
@@ -56,4 +57,3 @@ class VirtualCardCreateSerializer(serializers.ModelSerializer):
         )
 
         return virtual_card
-

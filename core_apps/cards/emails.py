@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from loguru import logger
 
 
-def  send_virtual_card_topup_email(user, virtual_card, amount, new_balance):
+def send_virtual_card_topup_email(user, virtual_card, amount, new_balance):
     subject = "Virtual card Top-Up Confirmation"
     from_email = settings.DEFAULT_FROM_EMAIL
     to_email = user.email
@@ -28,5 +28,6 @@ def  send_virtual_card_topup_email(user, virtual_card, amount, new_balance):
         email.send()
         logger.info(f"Virtual card top-up email sent to {user.email}")
     except Exception as e:
-        logger.error(f"Failed to send virtual card top-up email to {user.email}: {str(e)}")
-        
+        logger.error(
+            f"Failed to send virtual card top-up email to {user.email}: {str(e)}"
+        )
